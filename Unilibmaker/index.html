@@ -9,15 +9,50 @@
   </head>
   <body>
     <div class="display"></div>
-    <script language="javascript" type="text/javascript">
-      const url = "http://localhost:50031/speakers";
 
-      $.getJSON(url, (data) => {
-        for (let i=0; i<data.length; i++){
-          console.log(`UUID=${data[i].speaker_uuid}, name=${data[i].name}`);
-          for (let j=0; j<data[i].styles.length; j++){
-            console.log(`StyleName=${data[i].styles[j].name}, id=${data[i].styles[j].id}`);
-          }
+    <form method="post" action="">
+      <label for="voicevox">
+        <input type="radio" id="voicevox" name="engine" value="VOICEVOX">
+        VOICEVOX
+      </label>
+      <label for="coeiroink">
+        <input type="radio" id="coeiroink" name="engine" value="COEIROINK">
+        COEIROINK
+      </label>
+
+
+    </form>
+
+    <script language="javascript" type="text/javascript">
+      window.addEventListener('DOMContentLoaded', function(){
+        var input_engines = document.querySelectorAll("input[name=engine]");
+
+        for(var element of input_engines) {
+
+          element.addEventListener('change',function(){
+            if(this.checked){
+              console.log(this.value);
+              if(this.value=="VOICEVOX"){
+                var port_number = "50021";
+                var libtype = "voicevox";
+              }else if(this.value=="COEIROINK"){
+                var port_number = "50031";
+                var libtype = "coeiroink";
+              }
+            }
+            let url = `http://localhost:${port_number}/speakers`;
+
+            $.getJSON(url, (data) => {
+              for (let i=0; i<data.length; i++){
+              console.log(`UUID=${data[i].speaker_uuid}, name=${data[i].name}`);
+                for (let j=0; j<data[i].styles.length; j++){
+                 console.log(`StyleName=${data[i].styles[j].name}, id=${data[i].styles[j].id}`);
+                }
+              }
+            });
+
+          });
+
         }
       });
     </script>
