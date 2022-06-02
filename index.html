@@ -6,6 +6,15 @@
     <script type="text/javascript" src="../../lib/zlib/zip.min.js"></script>
   </head>
   <body>
-WIP
+    <div class="display"></div>
+    <script>
+  
+    $.getJSON('https://localhost:50031/speakers', function(speakers){
+      var display = `Name: ${speakers.name[0]}<br>
+                     UUID: ${speakers.speker_uuid[0]}<br>
+                     version: ${speakers.viersion[0]}`
+      $(".display").html(display);
+    });
+    </script>
   </body>
 </html>
