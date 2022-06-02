@@ -10,7 +10,7 @@
     <div class="display"></div>
     <script>
   
-    $.getJSON('https://localhost:50031/speakers', function(speakers){
+    $.getJSON('http://localhost:50031/speakers', function(speakers){
       var display = `Name: ${speakers.name[0]}<br>
                      UUID: ${speakers.speker_uuid[0]}<br>
                      version: ${speakers.viersion[0]}`
