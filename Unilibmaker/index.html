@@ -1,4 +1,5 @@
-﻿<html>
+﻿<!DOCTYPE html>
+<html lang="ja">
   <head>
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width">  
@@ -8,14 +9,18 @@
   </head>
   <body>
     <div class="display"></div>
-    <script>
-  
-    $.getJSON('http://localhost:50031/speakers', function(speakers){
-      var display = `Name: ${speakers.data['0']['name']}<br>
-                     UUID: ${speakers.speker_uuid}<br>
-                     version: ${speakers.viersion}`
-      $(".display").html(display);
-    });
+    <script language="javascript" type="text/javascript">
+      const url = "http://localhost:50031/speakers";
+
+      $.getJSON(url, (data) => {
+        for (let i=0; i<data.length; i++){
+          console.log(`UUID=${data[i].speaker_uuid}, name=${data[i].name}`);
+          for (let j=0; j<data[i].styles.length; j++){
+            console.log(`StyleName=${data[i].styles[j].name}, id=${data[i].styles[j].id}`);
+          }
+        }
+      });
     </script>
+
   </body>
 </html>
