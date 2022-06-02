@@ -1,0 +1,20 @@
+{
+  "Bools": [],
+  "Ints": [
+    {
+      "Value": speaker_id,
+      "DefaultValue": speaker_id,
+      "Min": 0,
+      "Max": 2147483647,
+      "SmallStep": 1,
+      "Key": "Speaker",
+      "Name": "Speaker Id",
+      "Description": "呼び出すキャラクターが変わる",
+      "Order": 0,
+      "Type": "",
+      "Hide": false
+    }
+  ],
+  "Doubles": [],
+  "Strings": []
+}
