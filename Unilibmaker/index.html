@@ -42,11 +42,11 @@
             }
             let url = `http://localhost:${port_number}/speakers`;
 
-            $.getJSON(url, (data) => {
-              for (let i=0; i<data.length; i++){
-              console.log(`UUID=${data[i].speaker_uuid}, name=${data[i].name}`);
-                for (let j=0; j<data[i].styles.length; j++){
-                 console.log(`StyleName=${data[i].styles[j].name}, id=${data[i].styles[j].id}`);
+            $.getJSON(url, (speakers => {
+              for (let i=0; i<speakers.length; i++){
+              console.log(`UUID=${speakers[i].speaker_uuid}, name=${speakers[i].name}`);
+                for (let j=0; j<speakers[i].styles.length; j++){
+                 console.log(`StyleName=${speakers[i].styles[j].name}, id=${speakers[i].styles[j].id}`);
                 }
               }
             });
