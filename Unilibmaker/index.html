@@ -12,49 +12,54 @@
 
     <form method="post" action="">
       <label for="voicevox">
-        <input type="radio" id="voicevox" name="engine" value="VOICEVOX">
+        <input type="radio" id="voicevox" name="engine" value="voicevox">
         VOICEVOX
       </label>
       <label for="coeiroink">
-        <input type="radio" id="coeiroink" name="engine" value="COEIROINK">
+        <input type="radio" id="coeiroink" name="engine" value="coeiroink">
         COEIROINK
       </label>
 
 
     </form>
+    <button type="button" id="execution" disabled onclick="getspeakers()">
+      実行
+    </button>
 
     <script language="javascript" type="text/javascript">
+
       window.addEventListener('DOMContentLoaded', function(){
         var input_engines = document.querySelectorAll("input[name=engine]");
 
         for(var element of input_engines) {
-
           element.addEventListener('change',function(){
-            if(this.checked){
-              console.log(this.value);
-              if(this.value=="VOICEVOX"){
-                var port_number = "50021";
-                var libtype = "voicevox";
-              }else if(this.value=="COEIROINK"){
-                var port_number = "50031";
-                var libtype = "coeiroink";
-              }
-            }
-            let url = `http://localhost:${port_number}/speakers`;
-
-            $.getJSON(url, (speakers) => {
-              for (let i=0; i<speakers.length; i++){
-              console.log(`UUID=${speakers[i].speaker_uuid}, name=${speakers[i].name}`);
-                for (let j=0; j<speakers[i].styles.length; j++){
-                 console.log(`StyleName=${speakers[i].styles[j].name}, id=${speakers[i].styles[j].id}`);
-                }
-              }
-            });
-
+            document.getElementById(execution);
+            execution.disabled = false;
           });
 
         }
       });
+      function getspeakers(){
+        console.log('button click');
+        const libtype = $('input:radio[name="engine"]:checked').val();
+        console.log(libtype);
+        if(libtype=="voicevox"){
+          var port_number = "50021";
+        }else if(libtype=="coeiroink"){
+          var port_number = "50031";
+        }
+        let url = `http://localhost:${port_number}/speakers`;
+        console.log(url);
+
+        $.getJSON(url, (speakers) => {
+           for (let i=0; i<speakers.length; i++){
+            console.log(`UUID=${speakers[i].speaker_uuid}, name=${speakers[i].name}`);
+              for (let j=0; j<speakers[i].styles.length; j++){
+                console.log(`StyleName=${speakers[i].styles[j].name}, id=${speakers[i].styles[j].id}`);
+              }
+            }
+        });
+      }
     </script>
 
   </body>
