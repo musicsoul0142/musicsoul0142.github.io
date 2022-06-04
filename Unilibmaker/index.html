@@ -28,6 +28,8 @@
 
     <script language="javascript" type="text/javascript">
 
+      var speakers_data ;
+
       window.addEventListener('DOMContentLoaded', function(){
         var input_engines = document.querySelectorAll("input[name=engine]");
 
@@ -51,13 +53,17 @@
         let url = `http://localhost:${port_number}/speakers`;
         console.log(url);
 
-        $.getJSON(url, (speakers) => {
-           for (let i=0; i<speakers.length; i++){
+        $.getJSON(url, function(speakers){
+/*             for (let i=0; i<speakers.length; i++){
             console.log(`UUID=${speakers[i].speaker_uuid}, name=${speakers[i].name}`);
               for (let j=0; j<speakers[i].styles.length; j++){
                 console.log(`StyleName=${speakers[i].styles[j].name}, id=${speakers[i].styles[j].id}`);
               }
-            }
+            } */
+            speakers_data = speakers;
+         });
+        $(document).ajaxSuccess(function(){
+          console.log(speakers_data);
         });
       }
     </script>
