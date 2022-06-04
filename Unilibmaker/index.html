@@ -22,13 +22,23 @@
 
 
     </form>
-    <button type="button" id="execution" disabled onclick="getspeakers()">
+    <button type="button" id="execution" disabled onclick="pushexec()">
       実行
     </button>
 
+
+<!--     <table class="content-table">
+      <thead>
+        <tr>
+
+        </tr>
+      </thead>
+    </table> -->
+
     <script language="javascript" type="text/javascript">
 
-      var speakers_data ;
+      var speakers_data = [];
+      var speaker_info_data = [];
 
       window.addEventListener('DOMContentLoaded', function(){
         var input_engines = document.querySelectorAll("input[name=engine]");
@@ -41,7 +51,51 @@
 
         }
       });
-      function getspeakers(){
+
+
+      function getspeakers(api_url){
+        return new Promise ((resolve) => {
+          console.log("Start getting speakers");
+          let speakers_data = $.getJSON(`${api_url}speakers`, (speakers)=>{
+              speakers_data = speakers;
+              return speakers_data;
+            });
+          console.log("Got speakers")
+          resolve(speakers_data);
+        });
+      }
+
+      async function request_speaker_info(api_url,speakers_data){
+          return new Promise ((resolve) =>{
+
+        });
+      }
+
+
+      async function getspeaker_info(api_url,speakers_data){
+
+        let results = [];
+          console.log("Start getting speaker info");
+            for (let i=0; i<speakers_data.length; i++){
+              results.push(
+              $.getJSON(`${api_url}speaker_info?speaker_uuid=${speakers_data[i].speaker_uuid}`, (speaker_info)=>{
+              }));
+            };
+        let speaker_info_data = (await Promise.all(results));
+        console.log("Got speaker info")
+        return speaker_info_data;
+      }
+
+      async function getdata(api_url){
+        let speakers_data = await getspeakers(api_url);
+        let speaker_info_data = await getspeaker_info(api_url,speakers_data);
+        console.log(speakers_data);
+        console.log(speaker_info_data);
+
+      }
+
+      
+      function pushexec(){
         console.log('button click');
         const libtype = $('input:radio[name="engine"]:checked').val();
         console.log(libtype);
@@ -50,21 +104,11 @@
         }else if(libtype=="coeiroink"){
           var port_number = "50031";
         }
-        let url = `http://localhost:${port_number}/speakers`;
-        console.log(url);
+        let api_url = `http://localhost:${port_number}/`;
+        console.log(api_url);
 
-        $.getJSON(url, function(speakers){
-/*             for (let i=0; i<speakers.length; i++){
-            console.log(`UUID=${speakers[i].speaker_uuid}, name=${speakers[i].name}`);
-              for (let j=0; j<speakers[i].styles.length; j++){
-                console.log(`StyleName=${speakers[i].styles[j].name}, id=${speakers[i].styles[j].id}`);
-              }
-            } */
-            speakers_data = speakers;
-         });
-        $(document).ajaxSuccess(function(){
-          console.log(speakers_data);
-        });
+        getdata(api_url);
+
       }
     </script>
 
