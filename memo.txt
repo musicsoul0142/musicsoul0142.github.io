@@ -1,0 +1,8 @@
+﻿必要な情報
+*LibType
+*speaker_id
+*Name
+*stylename
+*icon
+*portrait
+*policy
