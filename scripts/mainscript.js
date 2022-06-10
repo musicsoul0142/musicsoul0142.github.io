@@ -98,7 +98,8 @@ function maketree(data){
           for(let j=0; j<data[i].styles.length; j++){
               let li_styles_element = document.createElement('li');
               li_styles_element.textContent = data[i].styles[j].name;
-              li_styles_element.setAttribute("check_id",`${check_id}`);
+  //            li_styles_element.setAttribute("check_id"`${check_id}`);
+  //jstreeによって割り当てられるidを予測し、配列へ順に入れることでチェックボックスの状況からインデックスを取得する
               console.log(check_id);
               ul_styles_element.appendChild(li_styles_element);
           }
