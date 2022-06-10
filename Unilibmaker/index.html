@@ -7,6 +7,7 @@
     <script type="text/javascript" src="../lib/jquery/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="../lib/zlib/zlib.min.js"></script>
     <script type="text/javascript" src="../lib/jstree/jstree.min.js"></script>
+    <script type="text/javascript" src="../lib/jstreegrid/jstreegrid.js"></script>
   </head>
   <body>
     <div class="jstree"></div>
@@ -126,10 +127,10 @@
 
         let API_data = await getdata(api_url);
 
-        speakers_data = API_data[0];
+/*         speakers_data = API_data[0];
         speaker_info_data = API_data[1];
-        
-        reformatted_data = reformatSpeakers_data(speakers_data,speaker_info_data);
+ */        
+        reformatted_data = reformatSpeakers_data(API_data[0],API_data[1]);
 
         console.log(reformatted_data[0].styles.length);
         console.log(reformatted_data[0].styles[0].name);
