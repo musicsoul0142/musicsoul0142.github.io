@@ -83,22 +83,27 @@ async function getdata(api_url){
 //ツリー作成
 function maketree(data){
     let ul_root_element = document.createElement('ul');
+    let check_id = 0;
     for(let i=0; i<data.length; i++){
         let li_speaker_element = document.createElement('li');
         li_speaker_element.setAttribute("data-jstree",'{"opened":true}');
         li_speaker_element.textContent = data[i].name; 
-        ul_root_element.appendChild(li_speaker_element);
         if(data[i].singlestyle == "true"){
-            ul_root_element.appendChild(li_speaker_element);
+          li_speaker_element.setAttribute("check_id",`${check_id}`);
+          check_id++;
+          ul_root_element.appendChild(li_speaker_element);
         }else{
-            let ul_styles_element = document.createElement('ul');
-            for(let j=0; j<data[i].styles.length; j++){
-                let li_styles_element = document.createElement('li');
-                li_styles_element.textContent = data[i].styles[j].name;
-                ul_styles_element.appendChild(li_styles_element);
-            }
-            li_speaker_element.appendChild(ul_styles_element);
-            ul_root_element.appendChild(li_speaker_element);
+          ul_root_element.appendChild(li_speaker_element);
+          let ul_styles_element = document.createElement('ul');
+          for(let j=0; j<data[i].styles.length; j++){
+              let li_styles_element = document.createElement('li');
+              li_styles_element.textContent = data[i].styles[j].name;
+              li_styles_element.setAttribute("check_id",`${check_id}`);
+              console.log(check_id);
+              ul_styles_element.appendChild(li_styles_element);
+          }
+          li_speaker_element.appendChild(ul_styles_element);
+          ul_root_element.appendChild(li_speaker_element);
         }
     }
     var Tree1 = document.getElementById('Tree1');
@@ -107,7 +112,7 @@ function maketree(data){
 }
  
 
-//ボタンを押したとき
+//実行ボタンを押したとき
 async function pushexec(){
   console.log('button click');
   const libtype = $('input:radio[name="engine"]:checked').val();
@@ -133,7 +138,19 @@ async function pushexec(){
   maketree(reformatted_data);
 
   //JSTree適用
-$(function(){$('#Tree1').jstree({"plugins":["wholerow","checkbox"],});});
-
-
+  $(function(){$('#Tree1').jstree({
+    "plugins":["wholerow","checkbox"],
+    "core": {
+      "themes":{
+        "icons":false
+      }
+    }
+  });});
+  document.getElementById('submit');
+  submit.disabled = false;
+}
+function submitMe() {
+  var result = $('#Tree1').jstree('get_selected');
+  console.log(result);
+  
 }
