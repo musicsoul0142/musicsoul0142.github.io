@@ -28,14 +28,6 @@
     </button>
 
 
-<!--     <table class="content-table">
-      <thead>
-        <tr>
-
-        </tr>
-      </thead>
-    </table> -->
-
     <script language="javascript" type="text/javascript">
 
       var speakers_data = [];
@@ -71,7 +63,7 @@
         for (let speakerloop=0; speakerloop<speakers_data.length; speakerloop++){
           let reformatted_data_temp = {name:"",styles:[]};
           reformatted_data_temp.name = speakers_data[speakerloop].name;
-          reformatted_data_temp.policy = speaker_info_data[speakerloop].policy;
+//          reformatted_data_temp.policy = speaker_info_data[speakerloop].policy;
           reformatted_data_temp.portrait = speaker_info_data[speakerloop].portrait;
           if(speakers_data[speakerloop].styles.length=="1"){
             reformatted_data_temp.singlestyle = "true";
@@ -113,8 +105,6 @@
       async function getdata(api_url){
         let speakers_data = await getspeakers(api_url);
         let speaker_info_data = await getspeaker_info(api_url,speakers_data);
-        /* console.log(speakers_data);
-        console.log(speaker_info_data); */
         return [speakers_data,speaker_info_data] ;
       }
 
