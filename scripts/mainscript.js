@@ -1,6 +1,9 @@
 var speakers_data = [];
 var speaker_info_data = [];
 var reformatted_data = [];
+var check_id = [];
+var select_index = [];
+var libtype;
 
 
 //    画面を読みこんだら実行      
@@ -31,16 +34,18 @@ function getspeakers(api_url){
 
 //取得データの整理
 function reformatSpeakers_data(speakers_data,speaker_info_data){
+  let img_temp;
   for (let speakerloop=0; speakerloop<speakers_data.length; speakerloop++){
     let reformatted_data_temp = {name:"",styles:[]};
     reformatted_data_temp.name = speakers_data[speakerloop].name;
-//          reformatted_data_temp.policy = speaker_info_data[speakerloop].policy;
     reformatted_data_temp.portrait = speaker_info_data[speakerloop].portrait;
     if(speakers_data[speakerloop].styles.length=="1"){
       reformatted_data_temp.singlestyle = "true";
       reformatted_data[speakerloop] = reformatted_data_temp;
       reformatted_data_temp.styles.id = speakers_data[speakerloop].styles[0].id;
-      reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[0].icon;
+      img_temp = "data:image/png;base64," + speaker_info_data[speakerloop].style_infos[0].icon;
+//      reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[0].icon;
+      reformatted_data_temp.styles.icon = img_temp;
       reformatted_data[speakerloop].styles.push(reformatted_data_temp.styles);
     }else{
       reformatted_data_temp.singlestyle = "false";
@@ -49,7 +54,9 @@ function reformatSpeakers_data(speakers_data,speaker_info_data){
         let reformatted_data_temp = {styles:[]};
         reformatted_data_temp.styles.name = speakers_data[speakerloop].styles[styleloop].name;
         reformatted_data_temp.styles.id = speakers_data[speakerloop].styles[styleloop].id;
-        reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[styleloop].icon;
+        img_temp = "data:image/png;base64," + speaker_info_data[speakerloop].style_infos[styleloop].icon;
+//        reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[styleloop].icon;
+        reformatted_data_temp.styles.icon = img_temp;
         reformatted_data[speakerloop]['styles'].push(reformatted_data_temp.styles);
       }
     }
@@ -83,24 +90,28 @@ async function getdata(api_url){
 //ツリー作成
 function maketree(data){
     let ul_root_element = document.createElement('ul');
-    let check_id = 0;
+    let j1count = 1;
+    let indexcount = 0;
     for(let i=0; i<data.length; i++){
         let li_speaker_element = document.createElement('li');
-        li_speaker_element.setAttribute("data-jstree",'{"opened":true}');
-        li_speaker_element.textContent = data[i].name; 
+        li_speaker_element.setAttribute("data-jstree",`{"opened":true}`);
+        li_speaker_element.textContent = data[i].name;
         if(data[i].singlestyle == "true"){
-          li_speaker_element.setAttribute("check_id",`${check_id}`);
-          check_id++;
+          check_id[indexcount] = `j1_${j1count}`;
+          j1count++;
+          indexcount++;
           ul_root_element.appendChild(li_speaker_element);
         }else{
+          j1count++;
           ul_root_element.appendChild(li_speaker_element);
           let ul_styles_element = document.createElement('ul');
           for(let j=0; j<data[i].styles.length; j++){
               let li_styles_element = document.createElement('li');
               li_styles_element.textContent = data[i].styles[j].name;
-  //            li_styles_element.setAttribute("check_id"`${check_id}`);
-  //jstreeによって割り当てられるidを予測し、配列へ順に入れることでチェックボックスの状況からインデックスを取得する
-              console.log(check_id);
+              check_id[indexcount] = `j1_${j1count}`              
+              j1count++;
+              indexcount++;
+      //jstreeによって割り当てられるidを予測し、配列へ順に入れることでチェックボックスの状況からインデックスを取得する
               ul_styles_element.appendChild(li_styles_element);
           }
           li_speaker_element.appendChild(ul_styles_element);
@@ -109,6 +120,7 @@ function maketree(data){
     }
     var Tree1 = document.getElementById('Tree1');
     Tree1.appendChild(ul_root_element);
+    return check_id;
 
 }
  
@@ -116,7 +128,7 @@ function maketree(data){
 //実行ボタンを押したとき
 async function pushexec(){
   console.log('button click');
-  const libtype = $('input:radio[name="engine"]:checked').val();
+  libtype = $('input:radio[name="engine"]:checked').val();
   console.log(`libtype=${libtype}`);
   if(libtype=="voicevox"){
     var port_number = "50021";
@@ -136,7 +148,7 @@ async function pushexec(){
   console.log(reformatted_data[0].styles.length);
   console.log(reformatted_data[0].styles[0].name);
 
-  maketree(reformatted_data);
+  check_id = maketree(reformatted_data);
 
   //JSTree適用
   $(function(){$('#Tree1').jstree({
@@ -149,9 +161,33 @@ async function pushexec(){
   });});
   document.getElementById('submit');
   submit.disabled = false;
+  return libtype;
 }
+
+//確定ボタン
 function submitMe() {
-  var result = $('#Tree1').jstree('get_selected');
+  select_index = [];
+  let result = $('#Tree1').jstree('get_selected');
   console.log(result);
-  
+  console.log(check_id);
+
+  for(i=0; i<result.length; i++){
+    let temp_index = check_id.indexOf(result[i]);
+    let flg = Math.sign(temp_index);
+    if(flg == 1){
+      select_index.push(temp_index);
+    }
+  }
+  console.log(select_index);
+  return select_index;
+}
+
+async function Export_lib(){
+  if(libtype == "voicevox"){
+    //VOICEVOXの処理
+    templete_path="../template/VOICEVOX/"
+  }else{
+    //COEIROINKの処理
+    templete_path="../template/COEIROINK/"
+  }
 }
