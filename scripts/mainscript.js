@@ -244,6 +244,8 @@ function make_lib(template_data,libtype,reformatted_data,speaker_id,style_id){
 //library_setting    
     library_setting.Value = style_id;
     library_setting.DefaultValue = style_id;
+    
+//license    
     license.replace("name",Style_name);
     
   }
