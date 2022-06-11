@@ -1,7 +1,8 @@
 var speakers_data = [];
 var speaker_info_data = [];
 var reformatted_data = [];
-var check_id = [];
+var check_style_id = [];
+var check_speaker_id = [];
 var select_index = [];
 var libtype;
 
@@ -91,15 +92,16 @@ async function getdata(api_url){
 function maketree(data){
     let ul_root_element = document.createElement('ul');
     let j1count = 1;
-    let indexcount = 0;
+    let stylecount = 0;
     for(let i=0; i<data.length; i++){
         let li_speaker_element = document.createElement('li');
         li_speaker_element.setAttribute("data-jstree",`{"opened":true}`);
-        li_speaker_element.textContent = data[i].name;
+        li_speaker_element.textContent = data[i].name;        
         if(data[i].singlestyle == "true"){
-          check_id[indexcount] = `j1_${j1count}`;
+          check_style_id[stylecount] = `j1_${j1count}`;
+          check_speaker_id[stylecount] = [i,0];
           j1count++;
-          indexcount++;
+          stylecount++;
           ul_root_element.appendChild(li_speaker_element);
         }else{
           j1count++;
@@ -108,9 +110,10 @@ function maketree(data){
           for(let j=0; j<data[i].styles.length; j++){
               let li_styles_element = document.createElement('li');
               li_styles_element.textContent = data[i].styles[j].name;
-              check_id[indexcount] = `j1_${j1count}`              
+              check_style_id[stylecount] = `j1_${j1count}`              
+              check_speaker_id[stylecount] = [i,j];
               j1count++;
-              indexcount++;
+              stylecount++;
       //jstreeによって割り当てられるidを予測し、配列へ順に入れることでチェックボックスの状況からインデックスを取得する
               ul_styles_element.appendChild(li_styles_element);
           }
@@ -120,7 +123,7 @@ function maketree(data){
     }
     var Tree1 = document.getElementById('Tree1');
     Tree1.appendChild(ul_root_element);
-    return check_id;
+    return check_style_id;
 
 }
  
@@ -148,7 +151,7 @@ async function pushexec(){
   console.log(reformatted_data[0].styles.length);
   console.log(reformatted_data[0].styles[0].name);
 
-  check_id = maketree(reformatted_data);
+  check_style_id = maketree(reformatted_data);
 
   //JSTree適用
   $(function(){$('#Tree1').jstree({
@@ -169,10 +172,10 @@ function submitMe() {
   select_index = [];
   let result = $('#Tree1').jstree('get_selected');
   console.log(result);
-  console.log(check_id);
+  console.log(check_style_id);
 
   for(i=0; i<result.length; i++){
-    let temp_index = check_id.indexOf(result[i]);
+    let temp_index = check_style_id.indexOf(result[i]);
     let flg = Math.sign(temp_index);
     if(flg == 1){
       select_index.push(temp_index);
@@ -197,6 +200,7 @@ async function get_template(path){
   return template_data;
 }
 
+//ファイル作成ボタン
 async function Export_lib(){
   if(libtype == "voicevox"){
     //VOICEVOXの処理
@@ -207,5 +211,40 @@ async function Export_lib(){
   }
   let template_data = await get_template(templete_path);
   console.log(template_data);
+  
+   for(const elem of select_index){
+    checked_speaker_id = check_speaker_id[elem][0];
+    checked_style_id = check_speaker_id[elem][1];
+    console.log(checked_speaker_id,checked_style_id);
+    make_lib(template_data,libtype,reformatted_data,checked_speaker_id,checked_style_id)
+  }
+ 
+function make_lib(template_data,libtype,reformatted_data,speaker_id,style_id){
+    let character_config = template_data[0];
+    let library_config = template_data[1];
+    let library_setting = template_data[2];
+    let license = template_data[3];
+    let Style_name;
+    if(reformatted_data[speaker_id].styles.length ==1){
+      Style_name = reformatted_data[speaker_id].name;
+    }else{
+      Style_name = `${reformatted_data[speaker_id].name}（${reformatted_data[speaker_id].styles[style_id].name}）`;
+    }
 
+//library_config
+    library_config.Description =libtype+reformatted_data[speaker_id].styles[style_id];
+    if(libtype == "voicevox"){
+      library_config.Description = `VOICEVOX の ${style_id} 番話者`;
+    }else{
+      library_config.Description = `COEIROINK の ${style_id} 番話者`;
+    }
+    library_config.Key =libtype+style_id;
+    library_config.Name =Style_name;
+
+//library_setting    
+    library_setting.Value = style_id;
+    library_setting.DefaultValue = style_id;
+    license.replace("name",Style_name);
+    
+  }
 }
