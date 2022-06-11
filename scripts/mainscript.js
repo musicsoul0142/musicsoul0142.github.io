@@ -70,11 +70,11 @@ async function getspeaker_info(api_url,speakers_data){
 
   let results = [];
     console.log("Start getting speaker info");
-      for (let i=0; i<speakers_data.length; i++){
-        results.push(
-        $.getJSON(`${api_url}speaker_info?speaker_uuid=${speakers_data[i].speaker_uuid}`, (speaker_info)=>{
-        }));
-      };
+    for (let i=0; i<speakers_data.length; i++){
+      results.push(
+      $.getJSON(`${api_url}speaker_info?speaker_uuid=${speakers_data[i].speaker_uuid}`, (speaker_info)=>{
+      }));
+    }
   let speaker_info_data = (await Promise.all(results));
   console.log("Got speaker info")
   return speaker_info_data;
@@ -178,8 +178,22 @@ function submitMe() {
       select_index.push(temp_index);
     }
   }
+  document.getElementById('filemake');
+  filemake.disabled = false;
   console.log(select_index);
   return select_index;
+}
+
+async function get_template(path){
+    let results = [];
+    let template_file = ["character.config.json","library.config.json","library.settings.json","license.txt"];
+    for(i=0; i<template_file.length; i++){
+      results.push(
+        $.getJSON(path+template_file[i],(data) =>{
+      }));
+    }
+  let template_data = (await Promise.all(results));
+  return template_data;
 }
 
 async function Export_lib(){
@@ -190,4 +204,7 @@ async function Export_lib(){
     //COEIROINKの処理
     templete_path="../template/COEIROINK/"
   }
+  let template_data = await get_template(templete_path);
+  console.log(template_data);
+
 }
