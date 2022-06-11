@@ -185,14 +185,15 @@ function submitMe() {
 }
 
 async function get_template(path){
-    let results = [];
-    let template_file = ["character.config.json","library.config.json","library.settings.json","license.txt"];
-    for(i=0; i<template_file.length; i++){
-      results.push(
-        $.getJSON(path+template_file[i],(data) =>{
-      }));
-    }
-  let template_data = (await Promise.all(results));
+  let results = [];
+  let template_file = ["character.config.json","library.config.json","library.settings.json","license.txt"];
+  let template_data = [];
+  for(i=0; i<template_file.length-1; i++){
+      results.push($.getJSON(path+template_file[i],(data) =>{}));        
+  }
+  template_data = (await Promise.all(results));
+  template_data.push(await fetch(path+template_file[i])
+    .then(response => response.text()));
   return template_data;
 }
 
