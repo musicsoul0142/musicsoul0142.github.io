@@ -130,7 +130,7 @@ function maketree(data){
 
 //実行ボタンを押したとき
 async function pushexec(){
-  console.log('button click');
+
   libtype = $('input:radio[name="engine"]:checked').val();
   console.log(`libtype=${libtype}`);
   if(libtype=="voicevox"){
@@ -139,7 +139,6 @@ async function pushexec(){
     var port_number = "50031";
   }
   let api_url = `http://localhost:${port_number}/`;
-  console.log(api_url);
 
   let API_data = await getdata(api_url);
 
@@ -171,8 +170,8 @@ async function pushexec(){
 function submitMe() {
   select_index = [];
   let result = $('#Tree1').jstree('get_selected');
-  console.log(result);
-  console.log(check_style_id);
+/*   console.log(result);
+  console.log(check_style_id); */
 
   for(i=0; i<result.length; i++){
     let temp_index = check_style_id.indexOf(result[i]);
@@ -183,7 +182,7 @@ function submitMe() {
   }
   document.getElementById('filemake');
   filemake.disabled = false;
-  console.log(select_index);
+
   return select_index;
 }
 
@@ -210,7 +209,6 @@ async function Export_lib(){
     templete_path="../template/COEIROINK/"
   }
   let template_data = await get_template(templete_path);
-  console.log(template_data);
 
   make_lib(template_data,libtype,reformatted_data,select_index,check_speaker_id)
 
