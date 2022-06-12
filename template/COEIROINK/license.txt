@@ -6,7 +6,7 @@
  　　　　　　　　 https://twitter.com/musicsoul0142
  =========================================================================
 
-　本ライブラリはユニコエで利用するために自動生成されたものです。(https://musicsoul0142.github.io)
+　本ライブラリはユニコエで利用するために自動生成されたものです。(https://musicsoul0142.github.io/UniLibMaker/index.html)
 　シロワニさん様のCOEIROINK (https://coeiroink.com/) のAPIを呼ぶことができます。
 
 

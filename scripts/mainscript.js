@@ -35,7 +35,7 @@ function getspeakers(api_url){
 
 //取得データの整理
 function reformatSpeakers_data(speakers_data,speaker_info_data){
-  let img_temp;
+//  let img_temp;
   for (let speakerloop=0; speakerloop<speakers_data.length; speakerloop++){
     let reformatted_data_temp = {name:"",styles:[]};
     reformatted_data_temp.name = speakers_data[speakerloop].name;
@@ -44,9 +44,9 @@ function reformatSpeakers_data(speakers_data,speaker_info_data){
       reformatted_data_temp.singlestyle = "true";
       reformatted_data[speakerloop] = reformatted_data_temp;
       reformatted_data_temp.styles.id = speakers_data[speakerloop].styles[0].id;
-      img_temp = "data:image/png;base64," + speaker_info_data[speakerloop].style_infos[0].icon;
-//      reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[0].icon;
-      reformatted_data_temp.styles.icon = img_temp;
+/*       img_temp = "data:image/png;base64," + speaker_info_data[speakerloop].style_infos[0].icon;
+      reformatted_data_temp.styles.icon = img_temp; */
+      reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[0].icon;
       reformatted_data[speakerloop].styles.push(reformatted_data_temp.styles);
     }else{
       reformatted_data_temp.singlestyle = "false";
@@ -55,9 +55,9 @@ function reformatSpeakers_data(speakers_data,speaker_info_data){
         let reformatted_data_temp = {styles:[]};
         reformatted_data_temp.styles.name = speakers_data[speakerloop].styles[styleloop].name;
         reformatted_data_temp.styles.id = speakers_data[speakerloop].styles[styleloop].id;
-        img_temp = "data:image/png;base64," + speaker_info_data[speakerloop].style_infos[styleloop].icon;
-//        reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[styleloop].icon;
-        reformatted_data_temp.styles.icon = img_temp;
+/*         img_temp = "data:image/png;base64," + speaker_info_data[speakerloop].style_infos[styleloop].icon;        
+        reformatted_data_temp.styles.icon = img_temp; */
+        reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[styleloop].icon;
         reformatted_data[speakerloop]['styles'].push(reformatted_data_temp.styles);
       }
     }
@@ -148,8 +148,8 @@ async function pushexec(){
 */        
   reformatted_data = reformatSpeakers_data(API_data[0],API_data[1]);
 
-  console.log(reformatted_data[0].styles.length);
-  console.log(reformatted_data[0].styles[0].name);
+/*   console.log(reformatted_data[0].styles.length);
+  console.log(reformatted_data[0].styles[0].name); */
 
   check_style_id = maketree(reformatted_data);
 
@@ -177,7 +177,7 @@ function submitMe() {
   for(i=0; i<result.length; i++){
     let temp_index = check_style_id.indexOf(result[i]);
     let flg = Math.sign(temp_index);
-    if(flg == 1){
+    if(flg != -1){
       select_index.push(temp_index);
     }
   }
@@ -211,42 +211,127 @@ async function Export_lib(){
   }
   let template_data = await get_template(templete_path);
   console.log(template_data);
-  
-   for(const elem of select_index){
-    checked_speaker_id = check_speaker_id[elem][0];
-    checked_style_id = check_speaker_id[elem][1];
-    console.log(checked_speaker_id,checked_style_id);
-    make_lib(template_data,libtype,reformatted_data,checked_speaker_id,checked_style_id)
+
+  make_lib(template_data,libtype,reformatted_data,select_index,check_speaker_id)
+
+}
+
+function JSonObjtoUint8(mystring){
+  let Uint8_data = new TextEncoder().encode(JSON.stringify(mystring)); 
+  return Uint8_data;
+}
+
+ // (from: https://gist.github.com/borismus/1032746#gistcomment-1493026)
+ function base64ToUint8Array(base64Str) {
+  const raw = atob(base64Str);
+  return Uint8Array.from(Array.prototype.map.call(raw, (x) => { 
+    return x.charCodeAt(0); 
+  })); 
+}
+
+function stringToByteArray(str) {
+  var array = new (window.Uint8Array !== void 0 ? Uint8Array : Array)(str.length);
+  var i;
+  var il;
+
+  for (i = 0, il = str.length; i < il; ++i) {
+      array[i] = str.charCodeAt(i) & 0xff;
   }
- 
-function make_lib(template_data,libtype,reformatted_data,speaker_id,style_id){
-    let character_config = template_data[0];
-    let library_config = template_data[1];
-    let library_setting = template_data[2];
+
+  return array;
+}
+
+function make_lib(template_data,libtype,reformatted_data,select_index,check_speaker_id){
+
+  let zip = new Zlib.Zip();
+
+  for(const elem of select_index){
+    let c_config = template_data[0];
+    let l_config = template_data[1];
+    let l_setting = template_data[2];
     let license = template_data[3];
     let Style_name;
+
+    let speaker_id = check_speaker_id[elem][0];
+    let style_id = check_speaker_id[elem][1];
+
+    let speaker_key = libtype+reformatted_data[speaker_id].styles[style_id].id;//voicevox** or coeiroink**
+
+
     if(reformatted_data[speaker_id].styles.length ==1){
       Style_name = reformatted_data[speaker_id].name;
     }else{
       Style_name = `${reformatted_data[speaker_id].name}（${reformatted_data[speaker_id].styles[style_id].name}）`;
     }
 
-//library_config
-    library_config.Description =libtype+reformatted_data[speaker_id].styles[style_id];
-    if(libtype == "voicevox"){
-      library_config.Description = `VOICEVOX の ${style_id} 番話者`;
-    }else{
-      library_config.Description = `COEIROINK の ${style_id} 番話者`;
-    }
-    library_config.Key =libtype+style_id;
-    library_config.Name =Style_name;
+    zip.addFile(JSonObjtoUint8(c_config),{
+      filename: stringToByteArray(`${speaker_key}/character.config.json`)
+    });
 
-//library_setting    
-    library_setting.Value = style_id;
-    library_setting.DefaultValue = style_id;
+
+  //liblary_config
+    l_config.Description =libtype+reformatted_data[speaker_id].styles[style_id];
+    if(libtype == "voicevox"){
+      l_config.Description = `VOICEVOX の ${reformatted_data[speaker_id].styles[style_id].id} 番話者`;
+    }else{
+      l_config.Description = `COEIROINK の ${reformatted_data[speaker_id].styles[style_id].id} 番話者`;
+    }
+    l_config.Key = speaker_key;
+    l_config.Name =Style_name;
+
+    zip.addFile(JSonObjtoUint8(l_config),{
+      filename: stringToByteArray(`${speaker_key}/library.config.json`)
+    });
+
+  //library_setting    
+    l_setting.Value = reformatted_data[speaker_id].styles[style_id].id;
+    l_setting.DefaultValue = reformatted_data[speaker_id].styles[style_id].id;
+
+    zip.addFile(JSonObjtoUint8(l_setting),{
+      filename: stringToByteArray(`${speaker_key}/library.settings.json`)
+    });
     
-//license    
-    license.replace("name",Style_name);
+  //license    
+    license = license.replace("name",Style_name);
+//ミス 書き直す
+    zip.addFile(new TextEncoder().encode(license),{
+      filename: stringToByteArray(`${speaker_key}/license.txt`)
+    });
+
+  //image
+    let portrait = reformatted_data[speaker_id].portrait;
+
+    zip.addFile(base64ToUint8Array(portrait),{
+      filename: stringToByteArray(`${speaker_key}/picture/Base.png`)
+    });
+
+    let icon = reformatted_data[speaker_id].styles[style_id].icon;
+    
+    zip.addFile(base64ToUint8Array(icon),{
+      filename: stringToByteArray(`${speaker_key}/icon.png`)
+    });
     
   }
+  let compressData = zip.compress();
+
+  let filename = `Unicoe_${libtype}_library.vlib`;
+
+  let blob = new Blob([compressData],{ 'type': 'application/zip' });
+  if (window.navigator.msSaveBlob) {
+    window.navigator.msSaveBlob(blob, filename);
+    window.navigator.msSaveOrOpenBlob(blob, filename);
+} else {
+//  document.getElementById('filemake').href = window.URL.createObjectURL(blob);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  document.body.appendChild(a);
+  a.download = filename;
+  a.href = url;
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
+  
+}
+
+
