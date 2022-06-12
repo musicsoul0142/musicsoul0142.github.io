@@ -180,10 +180,11 @@ function submitMe() {
       select_index.push(temp_index);
     }
   }
-  document.getElementById('filemake');
-  filemake.disabled = false;
+  /* document.getElementById('filemake');
+  filemake.disabled = false; */
 
-  return select_index;
+//  return select_index;
+  Export_lib(select_index);
 }
 
 async function get_template(path){
@@ -282,8 +283,8 @@ function make_lib(template_data,libtype,reformatted_data,select_index,check_spea
     });
 
   //library_setting    
-    l_setting.Value = reformatted_data[speaker_id].styles[style_id].id;
-    l_setting.DefaultValue = reformatted_data[speaker_id].styles[style_id].id;
+    l_setting.Ints[0].Value = reformatted_data[speaker_id].styles[style_id].id;
+    l_setting.Ints[0].DefaultValue = reformatted_data[speaker_id].styles[style_id].id;
 
     zip.addFile(JSonObjtoUint8(l_setting),{
       filename: stringToByteArray(`${speaker_key}/library.settings.json`)

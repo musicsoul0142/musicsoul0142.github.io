@@ -2,8 +2,8 @@
   "Bools": [],
   "Ints": [
     {
-      "Value": "speaker_id",
-      "DefaultValue": "speaker_id",
+      "Value": "",
+      "DefaultValue": "",
       "Min": 0,
       "Max": 2147483647,
       "SmallStep": 1,
