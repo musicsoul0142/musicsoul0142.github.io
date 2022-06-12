@@ -293,7 +293,7 @@ function make_lib(template_data,libtype,reformatted_data,select_index,check_spea
     
   //license    
     license = license.replace("name",Style_name);
-//ミス 書き直す
+
     zip.addFile(new TextEncoder().encode(license),{
       filename: stringToByteArray(`${speaker_key}/license.txt`)
     });
