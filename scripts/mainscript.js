@@ -318,17 +318,17 @@ function make_lib(template_data,libtype,reformatted_data,select_index,check_spea
   if (window.navigator.msSaveBlob) {
     window.navigator.msSaveBlob(blob, filename);
     window.navigator.msSaveOrOpenBlob(blob, filename);
-} else {
-//  document.getElementById('filemake').href = window.URL.createObjectURL(blob);
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  document.body.appendChild(a);
-  a.download = filename;
-  a.href = url;
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
+  } else {
+  //  document.getElementById('filemake').href = window.URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    a.download = filename;
+    a.href = url;
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
   
 }
 
