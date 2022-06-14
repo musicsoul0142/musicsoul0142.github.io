@@ -1,10 +1,11 @@
 var speakers_data = [];
 var speaker_info_data = [];
-var reformatted_data = [];
-var check_style_id = [];
 var check_speaker_id = [];
 var select_index = [];
+var check_style_id = [];
+var reformatted_data = [];
 var libtype;
+var exec_flg = 0;
 
 
 //    画面を読みこんだら実行      
@@ -36,6 +37,7 @@ function getspeakers(api_url){
 //取得データの整理
 function reformatSpeakers_data(speakers_data,speaker_info_data){
 //  let img_temp;
+  reformatted_data =[];
   for (let speakerloop=0; speakerloop<speakers_data.length; speakerloop++){
     let reformatted_data_temp = {name:"",styles:[]};
     reformatted_data_temp.name = speakers_data[speakerloop].name;
@@ -96,7 +98,7 @@ function maketree(data){
     let ul_root_element = document.createElement('ul');
     let j1count = 1;
     let stylecount = 0;
-    for(let i=0; i<data.length; i++){
+    for(i=0; i<data.length; i++){
         let li_speaker_element = document.createElement('li');
         li_speaker_element.setAttribute("data-jstree",`{"opened":true}`);
         li_speaker_element.textContent = data[i].name;        
@@ -110,24 +112,78 @@ function maketree(data){
           j1count++;
           ul_root_element.appendChild(li_speaker_element);
           let ul_styles_element = document.createElement('ul');
-          for(let j=0; j<data[i].styles.length; j++){
+          for(j=0; j<data[i].styles.length; j++){
               let li_styles_element = document.createElement('li');
               li_styles_element.textContent = data[i].styles[j].name;
               check_style_id[stylecount] = `j1_${j1count}`              
               check_speaker_id[stylecount] = [i,j];
               j1count++;
               stylecount++;
-      //jstreeによって割り当てられるidを予測し、配列へ順に入れることでチェックボックスの状況からインデックスを取得する
               ul_styles_element.appendChild(li_styles_element);
           }
           li_speaker_element.appendChild(ul_styles_element);
           ul_root_element.appendChild(li_speaker_element);
         }
     }
-    var Tree1 = document.getElementById('Tree1');
+    let Tree1 = document.getElementById('Tree1');
+    while(Tree1.lastChild){
+      Tree1.removeChild(Tree1.lastChild);
+    }
+
+/*      let arrAttrib = Tree1.attributes;
+    let arr = [];
+    for (let objAttrib of arrAttrib){
+      arr.push(objAttrib.name)
+    }
+    arr.splice(0,2);
+    for(let attribName of arr){
+      Tree1.removeAttribute(attribName);
+    }
+//    Tree1.setAttribute("id","Tree1"); 
+ */
     Tree1.appendChild(ul_root_element);
     return check_style_id;
 
+}
+
+function maketree_data(data){
+  let j1count = 1;
+  let stylecount = 0;
+  let temp_data = [];
+  let tree_data = [];
+  check_style_id = [];
+  for(i=0; i<data.length; i++){
+    temp_data = [];
+    temp_data.id=`speaker${i}`;
+    temp_data.parent="#";
+    temp_data.text=data[i].name;
+    temp_data.state={};
+    temp_data.state.opened="true";
+    tree_data.push(temp_data);
+    if(data[i].singlestyle == "true"){
+      check_style_id[stylecount] = temp_data.id;
+      check_speaker_id[stylecount] = [i,0];
+      j1count++;
+      stylecount++;
+    }else{
+      j1count++;
+      let parent_id = temp_data.id;
+      for(j=0; j<data[i].styles.length; j++){
+        temp_data = [];
+        temp_data.id=`${i}${j}`;
+        temp_data.parent=parent_id;
+        temp_data.text=data[i].styles[j].name;
+        tree_data.push(temp_data);
+
+        check_style_id[stylecount] = temp_data.id;
+        check_speaker_id[stylecount] = [i,j];
+        j1count++;
+        stylecount++;
+      }
+    }
+    
+  }
+  return [tree_data,check_style_id];
 }
  
 
@@ -157,17 +213,41 @@ async function pushexec(){
 /*   console.log(reformatted_data[0].styles.length);
   console.log(reformatted_data[0].styles[0].name); */
 
-  check_style_id = maketree(reformatted_data);
+  //check_style_id = maketree(reformatted_data);
+  let tree_arr = maketree_data(reformatted_data);
+  let tree_data = tree_arr[0];
+  check_style_id = tree_arr[1];
 
   //JSTree適用
-  $(function(){$('#Tree1').jstree({
+/* 
+  $('#Tree1').jstree({
     "plugins":["wholerow","checkbox"],
     "core": {
-      "themes":{
-        "icons":false
+//      "check_callback":true,
+        "themes":{
+          "icons":false
       }
     }
-  });});
+  });
+  $('#Tree1').jstree("refresh");
+ */
+ 
+  if(exec_flg == 1){
+    $('#Tree1').jstree(true).settings.core.data = tree_data;
+  }else{
+    $('#Tree1').jstree({
+      "plugins":["wholerow","checkbox"],
+      'core':{
+        "data":tree_data,
+        "check_callback":true,
+        "themes":{
+          "icons":false
+        }
+    }})
+    exec_flg = 1;
+  }
+  $('#Tree1').jstree(true).refresh();
+
   document.getElementById('submit');
   submit.disabled = false;
   return libtype;
@@ -177,8 +257,12 @@ async function pushexec(){
 function submitMe() {
   select_index = [];
   let result = $('#Tree1').jstree('get_selected');
-/*   console.log(result);
-  console.log(check_style_id); */
+//  console.log(result);
+  if(result.length == 0){
+    alert("ライブラリに追加するキャラを選択してください。");
+    return;
+  }
+//  console.log(check_style_id);
 
   for(i=0; i<result.length; i++){
     let temp_index = check_style_id.indexOf(result[i]);
