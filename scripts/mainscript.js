@@ -24,10 +24,10 @@ window.addEventListener('DOMContentLoaded', function(){
 function getspeakers(api_url){
   return new Promise ((resolve) => {
     console.log("Start getting speakers");
-    let speakers_data = $.getJSON(`${api_url}speakers`, (speakers)=>{
-        speakers_data = speakers;
+    let speakers_data = $.getJSON(`${api_url}speakers`, (speakers_data)=>{
+//        speakers_data = speakers;
         return speakers_data;
-      });
+      })
     console.log("Got speakers")
     resolve(speakers_data);
   });
@@ -83,7 +83,10 @@ async function getspeaker_info(api_url,speakers_data){
 
 //API実行の呼び出し
 async function getdata(api_url){
-  let speakers_data = await getspeakers(api_url);
+  let speakers_data = await getspeakers(api_url).catch(() => "error");
+  if(speakers_data == "error"){
+    return speakers_data;
+    }
   let speaker_info_data = await getspeaker_info(api_url,speakers_data);
   return [speakers_data,speaker_info_data] ;
 }
@@ -141,6 +144,10 @@ async function pushexec(){
   let api_url = `http://localhost:${port_number}/`;
 
   let API_data = await getdata(api_url);
+  if (API_data == "error"){
+    alert("データ取得に失敗しました。対象のソフトを正しく選択するか再起動して下さい。");
+    throw new Error('データ取得に失敗しました。')
+  }
 
 /*         speakers_data = API_data[0];
   speaker_info_data = API_data[1];
