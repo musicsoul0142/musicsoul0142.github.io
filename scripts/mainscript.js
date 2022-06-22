@@ -11,6 +11,9 @@ var exec_flg = 0;
 //    画面を読みこんだら実行      
 window.addEventListener('DOMContentLoaded', function(){
   var input_engines = document.querySelectorAll("input[name=engine]");
+  document.getElementById("submit");
+  submit.style.display ='none';
+  
 
   for(var element of input_engines) {
     element.addEventListener('change',function(){
@@ -57,8 +60,6 @@ function reformatSpeakers_data(speakers_data,speaker_info_data){
         let reformatted_data_temp = {styles:[]};
         reformatted_data_temp.styles.name = speakers_data[speakerloop].styles[styleloop].name;
         reformatted_data_temp.styles.id = speakers_data[speakerloop].styles[styleloop].id;
-/*         img_temp = "data:image/png;base64," + speaker_info_data[speakerloop].style_infos[styleloop].icon;        
-        reformatted_data_temp.styles.icon = img_temp; */
         reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[styleloop].icon;
         reformatted_data[speakerloop]['styles'].push(reformatted_data_temp.styles);
       }
@@ -130,17 +131,6 @@ function maketree(data){
       Tree1.removeChild(Tree1.lastChild);
     }
 
-/*      let arrAttrib = Tree1.attributes;
-    let arr = [];
-    for (let objAttrib of arrAttrib){
-      arr.push(objAttrib.name)
-    }
-    arr.splice(0,2);
-    for(let attribName of arr){
-      Tree1.removeAttribute(attribName);
-    }
-//    Tree1.setAttribute("id","Tree1"); 
- */
     Tree1.appendChild(ul_root_element);
     return check_style_id;
 
@@ -250,6 +240,7 @@ async function pushexec(){
 
   document.getElementById('submit');
   submit.disabled = false;
+  submit.style.display ='inline';
   return libtype;
 }
 
