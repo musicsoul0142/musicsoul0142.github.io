@@ -2,6 +2,10 @@
 
 クライアントサイドでユニコエのVOICEVOX及びCOEIROINK用のライブラリを作成するツールです
 
+## 対応環境
+
+WindowsのGoogle Chrome、FireFox及びMicrosoft Edgeに対応しています。
+
 ## 使い方
 0.事前に[ユニコエ](https://sites.google.com/view/unicoe/)と、[VOICEVOX](https://voicevox.hiroshiba.jp/)または[COEIROINK](https://coeiroink.com)をインストールして下さい。
 
