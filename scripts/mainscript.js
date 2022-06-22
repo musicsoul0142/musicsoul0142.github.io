@@ -29,7 +29,6 @@ function getspeakers(api_url){
   return new Promise ((resolve) => {
     console.log("Start getting speakers");
     let speakers_data = $.getJSON(`${api_url}speakers`, (speakers_data)=>{
-//        speakers_data = speakers;
         return speakers_data;
       })
     console.log("Got speakers")
@@ -49,8 +48,6 @@ function reformatSpeakers_data(speakers_data,speaker_info_data){
       reformatted_data_temp.singlestyle = "true";
       reformatted_data[speakerloop] = reformatted_data_temp;
       reformatted_data_temp.styles.id = speakers_data[speakerloop].styles[0].id;
-/*       img_temp = "data:image/png;base64," + speaker_info_data[speakerloop].style_infos[0].icon;
-      reformatted_data_temp.styles.icon = img_temp; */
       reformatted_data_temp.styles.icon = speaker_info_data[speakerloop].style_infos[0].icon;
       reformatted_data[speakerloop].styles.push(reformatted_data_temp.styles);
     }else{
@@ -181,7 +178,6 @@ function maketree_data(data){
 async function pushexec(){
 
   libtype = $('input:radio[name="engine"]:checked').val();
-  console.log(`libtype=${libtype}`);
   if(libtype=="voicevox"){
     var port_number = "50021";
   }else if(libtype=="coeiroink"){
@@ -195,33 +191,12 @@ async function pushexec(){
     throw new Error('データ取得に失敗しました。')
   }
 
-/*         speakers_data = API_data[0];
-  speaker_info_data = API_data[1];
-*/        
   reformatted_data = reformatSpeakers_data(API_data[0],API_data[1]);
 
-/*   console.log(reformatted_data[0].styles.length);
-  console.log(reformatted_data[0].styles[0].name); */
-
-  //check_style_id = maketree(reformatted_data);
   let tree_arr = maketree_data(reformatted_data);
   let tree_data = tree_arr[0];
   check_style_id = tree_arr[1];
 
-  //JSTree適用
-/* 
-  $('#Tree1').jstree({
-    "plugins":["wholerow","checkbox"],
-    "core": {
-//      "check_callback":true,
-        "themes":{
-          "icons":false
-      }
-    }
-  });
-  $('#Tree1').jstree("refresh");
- */
- 
   if(exec_flg == 1){
     $('#Tree1').jstree(true).settings.core.data = tree_data;
   }else{
@@ -248,12 +223,10 @@ async function pushexec(){
 function submitMe() {
   select_index = [];
   let result = $('#Tree1').jstree('get_selected');
-//  console.log(result);
   if(result.length == 0){
     alert("ライブラリに追加するキャラを選択してください。");
     return;
   }
-//  console.log(check_style_id);
 
   for(i=0; i<result.length; i++){
     let temp_index = check_style_id.indexOf(result[i]);
@@ -262,10 +235,7 @@ function submitMe() {
       select_index.push(temp_index);
     }
   }
-  /* document.getElementById('filemake');
-  filemake.disabled = false; */
 
-//  return select_index;
   Export_lib(select_index);
 }
 
@@ -402,7 +372,6 @@ function make_lib(template_data,libtype,reformatted_data,select_index,check_spea
     window.navigator.msSaveBlob(blob, filename);
     window.navigator.msSaveOrOpenBlob(blob, filename);
   } else {
-  //  document.getElementById('filemake').href = window.URL.createObjectURL(blob);
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     document.body.appendChild(a);
