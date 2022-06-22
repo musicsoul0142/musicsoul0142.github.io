@@ -8,7 +8,7 @@ var libtype;
 var exec_flg = 0;
 
 
-//    画面を読みこんだら実行      
+//画面を読みこんだら実行      
 window.addEventListener('DOMContentLoaded', function(){
   var input_engines = document.querySelectorAll("input[name=engine]");
   document.getElementById("submit");
@@ -38,7 +38,6 @@ function getspeakers(api_url){
 
 //取得データの整理
 function reformatSpeakers_data(speakers_data,speaker_info_data){
-//  let img_temp;
   reformatted_data =[];
   for (let speakerloop=0; speakerloop<speakers_data.length; speakerloop++){
     let reformatted_data_temp = {name:"",styles:[]};
@@ -174,7 +173,7 @@ function maketree_data(data){
 }
  
 
-//実行ボタンを押したとき
+//リストアップボタンを押したとき
 async function pushexec(){
 
   libtype = $('input:radio[name="engine"]:checked').val();
@@ -219,7 +218,7 @@ async function pushexec(){
   return libtype;
 }
 
-//確定ボタン
+//ダウンロードボタン
 function submitMe() {
   select_index = [];
   let result = $('#Tree1').jstree('get_selected');
@@ -252,7 +251,7 @@ async function get_template(path){
   return template_data;
 }
 
-//ファイル作成ボタン
+//ファイル作成
 async function Export_lib(){
   if(libtype == "voicevox"){
     //VOICEVOXの処理
@@ -292,6 +291,7 @@ function stringToByteArray(str) {
   return array;
 }
 
+//ライブラリ作成
 function make_lib(template_data,libtype,reformatted_data,select_index,check_speaker_id){
 
   let zip = new Zlib.Zip();
@@ -363,10 +363,12 @@ function make_lib(template_data,libtype,reformatted_data,select_index,check_spea
     });
     
   }
+  //zip圧縮
   let compressData = zip.compress();
 
   let filename = `Unicoe_${libtype}_library.vlib`;
 
+  //ダウンロード
   let blob = new Blob([compressData],{ 'type': 'application/zip' });
   if (window.navigator.msSaveBlob) {
     window.navigator.msSaveBlob(blob, filename);
