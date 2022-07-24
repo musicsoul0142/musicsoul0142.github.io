@@ -255,12 +255,12 @@ async function get_template(path){
 async function Export_lib(){
   if(libtype == "voicevox"){
     //VOICEVOXの処理
-    templete_path="../template/VOICEVOX/"
+    template_path="../template/VOICEVOX/"
   }else{
     //COEIROINKの処理
-    templete_path="../template/COEIROINK/"
+    template_path="../template/COEIROINK/"
   }
-  let template_data = await get_template(templete_path);
+  let template_data = await get_template(template_path);
 
   make_lib(template_data,libtype,reformatted_data,select_index,check_speaker_id)
 
@@ -320,7 +320,7 @@ function make_lib(template_data,libtype,reformatted_data,select_index,check_spea
     });
 
 
-  //liblary_config
+  //library_config
     l_config.Description =libtype+reformatted_data[speaker_id].styles[style_id];
     if(libtype == "voicevox"){
       l_config.Description = `VOICEVOX の ${reformatted_data[speaker_id].styles[style_id].id} 番話者`;
