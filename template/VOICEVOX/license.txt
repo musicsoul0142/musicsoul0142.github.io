@@ -6,7 +6,7 @@
  =========================================================================
 
 　本ライブラリはユニコエで利用するために自動生成されたものです。(https://musicsoul0142.github.io/UniLibMaker/index.html)
-　シロワニさん様のVOICEVOX (https://VOICEVOX.com/) のAPIを呼ぶことができます。
+　ヒホ様のVOICEVOX (https://VOICEVOX.com/) のAPIを呼ぶことができます。
 
 
 ・利用について
