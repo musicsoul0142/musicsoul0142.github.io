@@ -181,7 +181,10 @@ async function pushexec(){
     var port_number = "50021";
   }else if(libtype=="coeiroink"){
     var port_number = "50031";
+  }else if(libtype=="sharevox"){
+    var port_number = "50025";
   }
+
   let api_url = `http://localhost:${port_number}/`;
 
   let API_data = await getdata(api_url);
@@ -256,9 +259,11 @@ async function Export_lib(){
   if(libtype == "voicevox"){
     //VOICEVOXの処理
     template_path="../template/VOICEVOX/"
-  }else{
+  }else if(libtype == "coeiroink"){
     //COEIROINKの処理
     template_path="../template/COEIROINK/"
+  }else if(libtype == "sharevox"){
+    template_path="../template/SHAREVOX/"
   }
   let template_data = await get_template(template_path);
 
@@ -324,8 +329,10 @@ function make_lib(template_data,libtype,reformatted_data,select_index,check_spea
     l_config.Description =libtype+reformatted_data[speaker_id].styles[style_id];
     if(libtype == "voicevox"){
       l_config.Description = `VOICEVOX の ${reformatted_data[speaker_id].styles[style_id].id} 番話者`;
-    }else{
+    }else if(libtype == "coeiroink"){
       l_config.Description = `COEIROINK の ${reformatted_data[speaker_id].styles[style_id].id} 番話者`;
+    }else if(libtype == "sharevox"){
+      l_config.Description = `SHAREVOX の ${reformatted_data[speaker_id].styles[style_id].id} 番話者`;
     }
     l_config.Key = speaker_key;
     l_config.Name =Style_name;
