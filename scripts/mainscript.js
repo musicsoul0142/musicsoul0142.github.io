@@ -263,7 +263,7 @@ async function Export_lib(){
     //COEIROINKの処理
     template_path="../template/COEIROINK/"
   }else if(libtype == "sharevox"){
-    template_data="../template/SHAREVOX/"
+    template_path="../template/SHAREVOX/"
   }
   let template_data = await get_template(template_path);
 
