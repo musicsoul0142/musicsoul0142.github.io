@@ -1,11 +1,11 @@
 {
-  "Key": "sharevox(speaker_id)",
+  "Key": "SHAREVOX(speaker_id)",
   "Name": "",
   "Description": "ここに詳細を入力",
   "OS": "Windows",
   "Language": "Japanese",
   "LibraryFormat": [
-    "ShareVoxLibrary"
+    "SHAREVOXLibrary"
   ],
   "VolumeSetting": {
     "Name": "音量",
