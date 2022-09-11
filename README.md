@@ -7,7 +7,8 @@
 WindowsのGoogle Chrome、FireFox及びMicrosoft Edgeに対応しています。
 
 ## 使い方
-0.事前に[ユニコエ](https://sites.google.com/view/unicoe/)と、[VOICEVOX](https://voicevox.hiroshiba.jp/)または[COEIROINK](https://coeiroink.com)をインストールして下さい。
+0.事前に[ユニコエ](https://sites.google.com/view/unicoe/)と、[VOICEVOX](https://voicevox.hiroshiba.jp/)または[COEIROINK](https://coeiroink.com)または[SHAREVOX](https://www.sharevox.app/)及びそれらに対応したエンジンプラグインをインストールしてください。
+VOICEVOX及びCOEIROINK用エンジンプラグインはユニコエ公式サイトのチュートリアルから、SHAREVOXは[こちら](https://darksky.soregashi.com/dl/sharevox_unicoe_plugin.html)からダウンロードしてください。
 
 1.ユニコエへ追加したいキャラのいるソフトを起動してください。
 
